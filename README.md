@@ -12,3 +12,10 @@ Inspired by https://stackoverflow.com/a/41532293
 
 Feel free to use under terms of MIT license, with link back to this gist.
 
+## Make it work
+
++ Create an nginx include file from the two files below (paste the html into the indicated spot).
++ Host the requred files. (highlightjs with required languages supported and styles)
++ Adjust nginx & html as required. *Make sure you do not use single quotes anywhere in the HTML!*
++ Magic!
+

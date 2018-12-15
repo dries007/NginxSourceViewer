@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Dries007">
+    <!-- Copyright 2018 Dries007 More info: https://gist.github.com/dries007/1180d07a7a7fd4aa3189e65aa07bbba8 -->
+    <link id="pagestyle" rel="stylesheet">
+    <style>
+        pre,html,body {min-height: 100%}
+        .hljs {font-family: "Fira Code", monospace !important} 
+        .wrap {white-space: pre-wrap; word-wrap: break-word;}
+        td.hljs-ln-code {padding-left: 10px !important;}
+        td.hljs-ln-numbers { user-select: none; text-align: center; color: #ccc; border-right: 1px solid #CCC; vertical-align: top; padding-right: 5px;}
+    </style>
+</head>
+<body class="hljs">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/highlightjs/highlight.pack.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.5.0/highlightjs-line-numbers.min.js"></script>
+    <script type="text/javascript">
+        var gStyle = "dracula";
+        const RAW_URL = "$uri?raw=1";
+        const STYLES = ["idea","dracula","a11y-light","a11y-dark","github","github-gist","default","dark","solarized-light","solarized-dark","xt256","qtcreator_light","qtcreator_dark","paraiso-light","paraiso-dark",];
+        hljs.configure({tabReplace: " "});
+        function set_style(style) {
+            jQuery("#pagestyle").attr("href", "/highlightjs/styles/"+style+".css");
+            jQuery("#style").text(style.replace("-", " ").replace("_", " "));
+            gStyle = style; localStorage.setItem("style", style);
+        }
+        function move_style(delta) {
+            let i = (STYLES.indexOf(gStyle) + delta);
+            if (i < 0) i += STYLES.length;
+            set_style(STYLES[i % STYLES.length]);
+        }
+        function toggle_wrap() {
+            let e = jQuery("#code");
+            let enable = arguments.length != 0 ? arguments[0] : !e.hasClass("wrap");
+            if (enable) e.addClass("wrap");
+            else e.removeClass("wrap");
+            localStorage.setItem("wrap", enable);
+        }
+        jQuery(function() {
+            if (localStorage.getItem("style") !== null) set_style(localStorage.getItem("style"));
+            else set_style(gStyle);
+            if (localStorage.getItem("wrap") !== null) toggle_wrap(localStorage.getItem("wrap"));
+            jQuery.get({
+                url: RAW_URL,
+                dataType: "text"
+            }).done(function(data) {
+                let b = jQuery("#code").text(data)[0];
+                hljs.highlightBlock(b);
+                hljs.lineNumbersBlock(b);
+            });
+            jQuery("#nxtstyle").click(function() {move_style(+1);});
+            jQuery("#prvstyle").click(function() {move_style(-1);});
+            jQuery("#wrap").click(function() {toggle_wrap();});
+        });
+    </script>
+    <div>
+        <a href="./" class="hljs-subst">Show directory.</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="$uri?raw=1" class="hljs-subst">Get the raw file here.</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="#" id="prvstyle" class="hljs-subst">&larr;</a>&nbsp;Style&nbsp;"<span id="style" style="text-transform: capitalize;"></span>"&nbsp;<a href="#" id="nxtstyle" class="hljs-subst">&rarr;</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="#" id="wrap" class="hljs-subst">Toggle wrapping.</a>
+    </div>
+    <pre><code id="code" class="$lang"></code></pre> </body>
+</htm>
